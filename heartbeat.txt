@@ -1,0 +1,38 @@
+from machine import Pin, ADC, I2C
+import ssd1306
+import time
+
+# Configuración del pin ADC (sensor de pulso KY-039)
+sensor_pin = Pin(34)
+adc = ADC(Pin(34))
+adc.width(ADC.WIDTH_10BIT)  # Configurar resolución de 10 bits (0-1023)
+adc.atten(ADC.ATTN_11DB)    # Configurar atenuación de señal (0-3.6V)
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Función para leer el valor del sensor de pulso KY-039
+def read_sensor():
+    return adc.read()
+
+# Función para calcular la frecuencia cardíaca basada en los datos del sensor
+def calculate_heartbeat(sensor_value):
+    # Implementa tu propio algoritmo para calcular la frecuencia cardíaca
+    # Aquí se muestra un ejemplo simple
+    return int(sensor_value / 10)  # Supongamos que la relación sensor_value a frecuencia cardíaca es lineal
+
+# Función para mostrar la frecuencia cardíaca en la pantalla OLED
+def display_heartbeat(heartbeat):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Frecuencia", 0, 0)
+    oled.text("cardíaca:", 0, 10)
+    oled.text(str(heartbeat) + " BPM", 0, 30)
+    oled.show()
+
+# Bucle principal
+while True:
+    sensor_value = read_sensor()  # Leer valor del sensor de pulso
+    heartbeat = calculate_heartbeat(sensor_value)  # Calcular frecuencia cardíaca
+    display_heartbeat(heartbeat)  # Mostrar frecuencia cardíaca en la pantalla OLED
+    time.sleep(1)  # Esperar un segundo antes de la próxima lectura
