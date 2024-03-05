@@ -1,0 +1,47 @@
+#Obtenemos modulos para Pin e Interfaz i2c
+from machine import Pin, SoftI2C
+from time import sleep
+import ssd1306
+#Obtenemos el modulo requerido para el display
+
+
+#Declaramos un objeto con los pines utilizados 
+#para la interfaz I2C
+i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
+
+button = Pin(19, Pin.IN)
+
+#Declaramos un objeto del tipo display
+display = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Inicializamos una variable count para contar
+count = 0
+
+# Definimos un mensaje que se mostrará en la pantalla
+
+
+while True:
+    
+    button_state = button.value()  # Leer el estado del botón
+    
+    
+    # Limpiamos la pantalla
+    display.fill(0)
+    
+    # Incrementamos el contador en cada iteración
+  
+    
+    # Mostramos el mensaje en la pantalla en la posición (0, 0)
+    
+    
+    # Mostramos el valor de count en la posición (0, 10)
+    display.text("MOnja: " + str(button_state), 0, 10, 1)
+    
+    # Actualizamos la pantalla
+    display.show()
+    
+    # Esperamos un segundo
+    sleep(1)
+    
+    
+

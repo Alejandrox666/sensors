@@ -1,0 +1,42 @@
+from machine import Pin, ADC, SoftI2C
+from time import sleep
+import ssd1306
+
+# Definimos pines de Joystick
+sw = ADC(Pin(34))
+vrx = ADC(Pin(35))
+vry = ADC(Pin(33))
+
+# Declaramos un objeto con los pines utilizados 
+# para la interfaz I2C
+i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
+
+# Declaramos un objeto del tipo display
+display = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Atenuación
+vrx.atten(ADC.ATTN_11DB)
+vry.atten(ADC.ATTN_11DB)
+
+# Resolución  a 4096
+vrx.width(ADC.WIDTH_12BIT)
+vry.width(ADC.WIDTH_12BIT)
+
+while True:
+    valorsw = sw.read()
+    valorx = vrx.read()
+    valory = vry.read()
+    print(valorx, valory, valorsw)
+    
+    display.fill(0)
+    
+    # Muestra cada valor en una posición diferente
+    display.text("SW: " + str(valorsw), 0, 0, 1)
+    display.text("X: " + str(valorx), 0, 16, 1)
+    display.text("Y: " + str(valory), 0, 32, 1)
+    
+    display.show()
+    sleep(1)
+
+  
+

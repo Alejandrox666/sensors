@@ -1,0 +1,33 @@
+from machine import Pin, SoftI2C
+from time import sleep
+import ssd1306
+
+# Declaramos un objeto con los pines utilizados para la interfaz I2C
+i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
+
+# Declaramos un objeto del tipo display
+display = ssd1306.SSD1306_I2C(128, 64, i2c)
+pin_sensor = Pin(19, Pin.IN)
+
+# Definimos un mensaje que se mostrará en la pantalla
+
+while True:
+    estado = pin_sensor.value()
+    
+    # Limpia la pantalla en cada iteración
+    display.fill(0)
+    
+    if estado == 1:
+        oracion2 = "Campo detectado"
+        sleep(0.1)
+        display.text(str(oracion2), 0, 0, 1)
+    else:
+        oracion = "Campo no detectado"
+        sleep(0.1)
+        display.text(str(oracion), 0, 0, 1)
+    
+    # Actualiza la pantalla OLED
+    display.show()
+    
+    sleep(1)
+

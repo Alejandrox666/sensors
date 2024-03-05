@@ -1,0 +1,48 @@
+from machine import Pin, SoftI2C, ADC
+import ssd1306
+import time
+
+# Configuración de la pantalla OLED
+i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
+display = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Configuración del pin de la señal del módulo KY-034 Color Flash
+pin_signal = ADC(Pin(34))  # Pin del fotodiodo (señal analógica)
+pin_signal.atten(ADC.ATTN_11DB)  # Ajuste de la atenuación de la señal
+
+# Configuración de los pines para controlar el LED RGB del módulo
+pin_led_r = Pin(13, Pin.OUT)
+pin_led_g = Pin(12, Pin.OUT)
+pin_led_b = Pin(14, Pin.OUT)
+
+# Función para encender el LED RGB
+def encender_led(r, g, b):
+    pin_led_r.value(r)
+    pin_led_g.value(g)
+    pin_led_b.value(b)
+
+# Función para leer la intensidad de la luz
+def leer_intensidad_luz():
+    return pin_signal.read()
+
+# Ciclo principal
+while True:
+    # Leer la intensidad de la luz
+    intensidad_luz = leer_intensidad_luz()
+    
+    # Encender el LED RGB con base en la intensidad de la luz (solo para propósitos de demostración)
+    if intensidad_luz > 500:  # Umbral arbitrario para cambiar los colores
+        encender_led(1, 0, 0)  # Rojo
+    else:
+        encender_led(0, 1, 0)  # Verde
+    
+    # Mostrar la intensidad de la luz en la pantalla OLED
+    display.fill(0)  # Limpiar la pantalla
+    display.text("KY-034 Color Flash", 0, 0, 1)
+    display.text("Intensidad luz:", 0, 20, 1)
+    display.text(str(intensidad_luz), 0, 40, 1)
+    display.show()
+    
+    # Esperar un tiempo antes de leer nuevamente
+    time.sleep(0.1)
+

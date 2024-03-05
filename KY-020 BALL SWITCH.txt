@@ -1,0 +1,29 @@
+from machine import Pin, I2C
+import ssd1306
+import time
+
+# Configuración de la pantalla OLED
+i2c = I2C(-1, Pin(22), Pin(21))  # Configura el bus I2C en los pines 22 (SDA) y 21 (SCL)
+oled_width = 128
+oled_height = 64
+oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
+
+# Configuración del pin del switch
+switch_pin = Pin(2, Pin.IN)  # El KT-020 Ball Switch está conectado al pin 2
+
+# Función para leer el estado del switch
+def leer_estado_switch():
+    return switch_pin.value()
+
+# Función para mostrar el valor en la pantalla OLED
+def mostrar_valor(valor):
+    oled.fill(0)
+    oled.text("Valor actual:", 0, 0)
+    oled.text(str(valor), 0, 16)
+    oled.show()
+
+# Bucle principal
+while True:
+    valor_actual = leer_estado_switch()  # Lee el estado actual del switch
+    mostrar_valor(valor_actual)  # Muestra el valor en la pantalla OLED
+    time.sleep(0.1)  # Espera un breve período antes de volver a leer el estado del switch
