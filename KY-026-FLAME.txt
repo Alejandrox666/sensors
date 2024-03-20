@@ -1,0 +1,32 @@
+from machine import Pin, SoftI2C
+import ssd1306
+import time
+
+# Configuración de pines
+PIN_SENSOR_LLAMA = 34  # Por ejemplo, puedes usar el pin 34 de la ESP32
+
+# Configuración de la pantalla OLED
+i2c = SoftI2C(sda=Pin(21), scl=Pin(22))
+display = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Inicialización del pin del sensor de llama como entrada
+sensor_llama = Pin(PIN_SENSOR_LLAMA, Pin.IN)
+
+# Función para verificar si se detecta una llama
+def verificar_llama():
+    if sensor_llama.value() == 1:
+        display.fill(0)  # Limpiar pantalla
+        display.text("Llama detectada", 0, 10)
+        display.show()
+        print("Llama detectada")
+    else:
+        display.fill(0)  # Limpiar pantalla
+        display.text("Llama no ", 0, 10)
+        display.show()
+        print("No se detecta ninguna llama")
+
+# Bucle principal
+while True:
+    verificar_llama()  # Verificar si se detecta una llama
+    time.sleep(2)  # Esperar un corto periodo antes de la próxima lectura
+

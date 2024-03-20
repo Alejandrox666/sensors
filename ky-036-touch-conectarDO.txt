@@ -1,0 +1,30 @@
+from machine import Pin, I2C
+import ssd1306
+import time
+
+# Configuración de pines
+PIN_SENSOR_TACTIL = 4  # Por ejemplo, puedes usar el pin 34 de la ESP32
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Configuración del pin del sensor táctil como entrada
+sensor_tactil = Pin(PIN_SENSOR_TACTIL, Pin.IN)
+
+# Función para mostrar el estado del sensor táctil en la pantalla OLED
+def mostrar_estado_sensor(valor):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Sensor Tactil:", 0, 0)
+    if valor == 1:
+        oled.text("TOCADO", 0, 20)
+    else:
+        oled.text("NO TOCADO", 0, 20)
+    oled.show()
+
+# Bucle principal
+while True:
+    valor_digital = sensor_tactil.value()  # Leer valor digital del sensor táctil
+    mostrar_estado_sensor(valor_digital)  # Mostrar estado del sensor táctil en la pantalla OLED
+    time.sleep(0.5)  # Esperar un corto periodo antes de la próxima lectura
+

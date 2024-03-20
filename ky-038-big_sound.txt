@@ -1,0 +1,34 @@
+from machine import Pin, ADC, I2C
+import ssd1306
+import time
+
+# Configuración de pines
+PIN_SENSOR_SONIDO_ANALOGICO = 34  # Por ejemplo, puedes usar el pin 34 de la ESP32
+
+# Inicialización del ADC
+adc = ADC(Pin(PIN_SENSOR_SONIDO_ANALOGICO))
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Función para leer el valor del potenciómetro
+def read_pot():
+    return adc.read()
+
+# Función para mostrar el valor del potenciómetro en la pantalla OLED
+def display_value(value):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Valor del", 0, 0)
+    oled.text("Nivel de sonido:", 0, 10)
+    oled.text(str(value), 0, 30)
+    oled.show()
+
+# Bucle principal
+while True:
+    valor_analogico = read_pot()  # Leer valor del potenciómetro
+    display_value(valor_analogico)  # Mostrar valor en la pantalla OLED
+    time.sleep(2)  # Esperar un momento antes de la próxima lectura
+    # Bucle principal
+    print('Programa iniciado. Presiona CTRL+C para salir.')
+

@@ -1,0 +1,32 @@
+from machine import Pin, I2C
+import ssd1306
+import time
+
+# Configuración de pines
+PIN_REED_SWITCH = 5  # Por ejemplo, puedes usar el pin 34 de la ESP32
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Configuración del pin del interruptor de lámina como entrada
+reed_switch = Pin(PIN_REED_SWITCH, Pin.IN)
+
+# Función para mostrar el estado del interruptor de lámina en la pantalla OLED
+def mostrar_estado_interruptor(estado):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Interruptor de", 0, 0)
+    oled.text("lámina:", 0, 10)
+    if estado == 1:
+        oled.text("CERRADO", 0, 30)
+    else:
+        oled.text("ABIERTO", 0, 30)
+    oled.show()
+
+# Bucle principal
+while True:
+    estado_interruptor = reed_switch.value()  # Leer estado del interruptor de lámina
+    mostrar_estado_interruptor(estado_interruptor)  # Mostrar estado en la pantalla OLED
+    print(estado_interruptor)
+    time.sleep(0.5)  # Esperar un corto periodo antes de la próxima lectura
+

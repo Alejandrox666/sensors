@@ -1,0 +1,41 @@
+from machine import Pin, ADC
+import time
+
+# Configuración de pines
+PIN_SENSOR_IR = 34  # Pin al que está conectado el sensor de infrarrojos KY-032
+
+# Inicialización del ADC para leer la señal analógica del sensor IR
+adc = ADC(Pin(PIN_SENSOR_IR))
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Umbral para determinar la presencia de un obstáculo
+UMBRAL_OBSTACULO = 3000 # Ajusta este valor según sea necesario
+
+# Función para mostrar el valor del potenciómetro en la pantalla OLED
+def display_value(value):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Valor del", 0, 0)
+    oled.text("Nivel de sonido:", 0, 10)
+    oled.text(str(value), 0, 30)
+    oled.show()
+
+
+def verificar_obstaculo():
+    valor_analogico = adc.read()  # Leer valor del sensor de infrarrojos
+    if valor_analogico < UMBRAL_OBSTACULO:
+        display_value('Obstaculo detectado')  # Mostrar valor en la pantalla OLED
+        time.sleep(2)  # Esperar un momento antes de la próxima lectura
+        print("Obstáculo detectado")
+    else:
+        display_value('Ningún obstaculo')  # Mostrar valor en la pantalla OLED
+        time.sleep(2)  # Esperar un momento antes de la próxima lectura
+        print("Ningún obstáculo")
+
+# Bucle principal
+while True:
+    verificar_obstaculo()  # Verificar la presencia de obstáculos
+    time.sleep(0.5)  # Esperar un corto periodo antes de la próxima lectura
+

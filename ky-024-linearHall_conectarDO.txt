@@ -1,0 +1,38 @@
+from machine import Pin, ADC, I2C
+import ssd1306
+import time
+
+# Configuración de pines
+PIN_SENSOR_HALL = 4  # Por ejemplo, puedes usar el pin 34 de la ESP32
+
+# Configuración del I2C para la pantalla OLED
+i2c = I2C(scl=Pin(22), sda=Pin(21))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+# Inicialización del ADC para leer la señal analógica del sensor de efecto Hall
+adc = ADC(Pin(PIN_SENSOR_HALL))
+
+# Función para leer el valor del sensor de efecto Hall
+def leer_valor_sensor():
+    return adc.read()
+
+# Función para mostrar el valor en la pantalla OLED y la detección de campo magnético
+def mostrar_valor_en_oled(valor):
+    oled.fill(0)  # Limpiar pantalla
+    oled.text("Valor del sensor:", 0, 0)
+    oled.text(str(valor), 0, 20)
+    if valor > 2000:  # Si el valor es menor que 4095, se detecta un campo magnético
+        oled.text("Campo magnetico:", 0, 40)
+        oled.text("SI", 0, 60)
+    else:
+        oled.text("Campo magnetico:", 0, 40)
+        oled.text("NO", 0, 60)
+    oled.show()
+
+# Bucle principal
+while True:
+    valor_analogico = leer_valor_sensor()  # Leer valor del sensor de efecto Hall
+    mostrar_valor_en_oled(valor_analogico)  # Mostrar valor en la pantalla OLED y la detección de campo magnético
+    print("Valor del sensor de efecto Hall:", valor_analogico)
+    time.sleep(1)  # Esperar un corto periodo antes de la próxima lectura
+
