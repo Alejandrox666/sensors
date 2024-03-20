@@ -31,3 +31,4 @@
 |Temperature Digital|KY-025|
 |Linear Hall|KY-024|
 |Flame|KY-026|
+|Red Switch|KY-025|
