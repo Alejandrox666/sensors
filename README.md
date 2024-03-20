@@ -26,8 +26,8 @@
 ## Tercera ronda
 |Nombre de sensor|Modelo|
 |-|-|
-|Tracking|KY-033|
-|Tap-Module|KY-031|
-|Tilt-Switch|KY-017|
-|Button|KY-004|
-|Mini-Switch|KY-021|
+|Touch|KY-036|
+|Avoidance|KY-032|
+|Temperature Digital|KY-025|
+|Linear Hall|KY-024|
+|Flame|KY-026|
